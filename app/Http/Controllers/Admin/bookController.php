@@ -12,8 +12,8 @@ class bookController extends Controller
 {
     public function index()
     {
- 
-        $books = Book::with('type')->get();
+        // eager load type -> category -> classification to avoid N+1 and null access
+        $books = Book::with('type.category.classification')->get();
 
         return view('Admin.book.index', compact('books'));
     }
