@@ -6,6 +6,179 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
+
+/* Professional gray + blue palette requested by user
+     Backgrounds:
+         --gray-50  #F9FAFB
+         --gray-100 #F3F4F6
+         --gray-200 #E5E7EB
+         --gray-300 #D1D5DB
+     Text:
+         --gray-600 #4B5563
+         --gray-700 #374151
+         --gray-800 #1F2937
+     Structural: --white #FFFFFF
+     Accent: --blue #2563EB
+     Shadow base RGB: --shadow 0,0,0
+*/
+:root {
+        /* Background scale */
+        --gray-50:  #F9FAFB;
+        --gray-100: #F3F4F6;
+        --gray-200: #E5E7EB;
+        --gray-300: #D1D5DB;
+
+        /* Text scale */
+        --gray-600: #4B5563;
+        --gray-700: #374151;
+        --gray-800: #1F2937;
+
+        /* Structural */
+        --white: #FFFFFF;
+
+        /* Brand / Accent */
+        --blue: #2563EB; /* Primary Action Blue */
+
+        /* Shadow base (RGB) */
+        --shadow: 0,0,0;
+
+        /* UI tokens */
+        --radius: 10px;
+        --shadow-1: 0 6px 18px rgba(var(--shadow), 0.08);
+        --shadow-2: 0 10px 30px rgba(var(--shadow), 0.06);
+}
+
+/* Global base */
+html,body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--gray-50);
+    color: var(--gray-800);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+}
+
+/* Links */
+a {
+    color: var(--blue);
+    text-decoration: underline;
+}
+a:hover, a:focus {
+    color: color-mix(in srgb, var(--blue) 80%, black 20%);
+    text-decoration: none;
+}
+
+/* Focus outlines for accessibility */
+:focus {
+    outline: 3px solid rgba(11,61,145,0.16);
+    outline-offset: 2px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--gray-100), var(--white));
+    color: var(--gray-800);
+    padding: 24px 16px;
+    border-right: 1px solid rgba(0,0,0,0.04);
+}
+.sidebar h3 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 18px;
+    color: var(--blue);
+}
+.sidebar a {
+    color: var(--gray-700);
+    padding: 10px 12px;
+    text-decoration: none;
+    display: block;
+    margin: 6px 4px;
+    border-radius: 8px;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, color .12s ease;
+}
+.sidebar a:hover,
+.sidebar a.active {
+    background: rgba(37,99,235,0.06);
+    color: var(--blue);
+    box-shadow: var(--shadow-1);
+    transform: translateY(-2px);
+}
+
+/* Main content area */
+.content {
+    margin-left: 250px;
+    padding: 24px;
+}
+
+.topbar {
+    background: var(--white);
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-1);
+    border-left: 4px solid var(--blue);
+}
+
+/* Cards */
+.card {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-1);
+    background: var(--white);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    box-shadow: var(--shadow-1);
+    color: var(--white);
+}
+.btn-outline-primary {
+    color: var(--blue);
+    border-color: var(--blue);
+    background: transparent;
+}
+.btn-cta {
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+}
+
+/* Tables */
+.table thead {
+    background: linear-gradient(90deg, var(--gray-200), var(--gray-100));
+}
+
+/* Form inputs */
+input, textarea, select {
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.08);
+    padding: .5rem .75rem;
+    color: var(--gray-800);
+    background: var(--white);
+}
+
+/* Subtle utility classes */
+.muted { color: var(--text-muted); }
+.text-accent { color: var(--accent); }
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Small helpers for contrast ratio checking during development */
+.a11y-strong { color: var(--text); }
+

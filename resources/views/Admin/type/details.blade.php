@@ -14,7 +14,7 @@
             <p><strong>Edition:</strong> {{ $type->edition}}</p>
             <p><strong>Category:</strong> {{ $type->category?->name ?? 'No Category' }}</p>
 
-            <a href="{{ route('type.index') }}" class="btn btn-secondary mt-2">Back</a>
+            <a href="{{ route('type.index') }}" class="btn btn-outline-primary mt-2">Back</a>
 
         </div>
     </div>

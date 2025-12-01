@@ -46,8 +46,8 @@
                            required>
                 </div>
 
-                <button class="btn btn-success">Update</button>
-                <a href="{{ route('type.index') }}" class="btn btn-secondary">Back</a>
+                <button class="btn btn-primary">Update</button>
+                <a href="{{ route('type.index') }}" class="btn btn-outline-primary">Back</a>
 
             </form>
 

@@ -23,7 +23,7 @@
                 <img src="{{ $book->Picture }}" alt="Book Image" class="img-fluid rounded" style="max-height: 200px;">
             @endif
 
-            <a href="{{ route('book.index') }}" class="btn btn-secondary mt-3">Back</a>
+            <a href="{{ route('book.index') }}" class="btn btn-outline-primary mt-3">Back</a>
 
         </div>
     </div>

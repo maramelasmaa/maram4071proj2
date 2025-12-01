@@ -44,11 +44,20 @@
 
         <hr class="my-4">
 
-    <h4 class="fw-bold">Categories Per Classification</h4>
-
-    {{-- حاوية تضبط ارتفاع الشارت --}}
-    <div style="height: 320px;">
-        <canvas id="myChart"></canvas>
+    {{-- Two separate charts: System Trend and Distribution --}}
+    <div class="row">
+        <div class="col-md-6">
+            <h5 class="fw-bold">System Trend</h5>
+            <div style="height: 320px;">
+                <canvas id="myChartTrend"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h5 class="fw-bold">Distribution (%)</h5>
+            <div style="height: 320px;">
+                <canvas id="myChartDist"></canvas>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -56,29 +65,96 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const ctx = document.getElementById('myChart').getContext('2d');
+    // Labels for both charts
+    const labels = {!! json_encode($chartlabel ?? []) !!};
 
-    new Chart(ctx, {
-        type: 'bar',
+    // System trend: prefer explicit series variable, fallback to chart values
+    const trend = {!! json_encode($series_system_trend ?? null) !!} ?? {!! json_encode($chartvalues ?? []) !!};
+
+    // Distribution: use provided series or derive percentages from trend
+    let distribution = {!! json_encode($series_distribution ?? null) !!};
+    if (distribution === null) {
+        const numericTrend = (trend || []).map(v => Number(v) || 0);
+        const sum = numericTrend.reduce((a, b) => a + b, 0);
+        distribution = sum ? numericTrend.map(v => +( (v / sum * 100).toFixed(1) )) : numericTrend.map(() => 0);
+    }
+
+    // --- Trend chart (line) ---
+    const ctxTrend = document.getElementById('myChartTrend').getContext('2d');
+        const gradient = ctxTrend.createLinearGradient(0, 0, 0, 400);
+            // Soft gray gradient (matches new palette)
+            gradient.addColorStop(0, 'rgba(229,231,235,0.35)');
+            gradient.addColorStop(1, 'rgba(229,231,235,0)');
+
+    const trendChart = new Chart(ctxTrend, {
+        type: 'line',
         data: {
-            labels: {!! json_encode($chartlabel) !!},
+            labels: labels,
             datasets: [{
-                label: 'Number of Categories',
-                data: {!! json_encode($chartvalues) !!},
-                backgroundColor: '#6a4cff'
+                label: 'System Trend',
+                data: trend,
+                fill: true,
+                backgroundColor: gradient,
+                    borderColor: '#2563EB',
+                    pointBackgroundColor: '#2563EB',
+                pointRadius: 4,
+                tension: 0.35,
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,   // يخلي الارتفاع يتبع الـ div اللي فوق
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1      // يمنع الأرقام الكسرية 0.1, 0.2 ...
-                    }
+            maintainAspectRatio: false,
+                plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: {
+                    backgroundColor: '#F3F4F6',
+                    titleColor: '#1F2937',
+                    bodyColor: '#1F2937',
+                    borderColor: 'rgba(0,0,0,0.06)',
+                    borderWidth: 1
                 }
+            },
+            interaction: { mode: 'index', intersect: false },
+                scales: {
+                x: { grid: { display: false }, ticks: { color: '#374151' } },
+                y: { beginAtZero: true, ticks: { color: '#1F2937' }, grid: { color: 'rgba(0,0,0,0.06)' } }
             }
+        }
+    });
+
+    // --- Distribution chart (bar) ---
+    const ctxDist = document.getElementById('myChartDist').getContext('2d');
+    const distChart = new Chart(ctxDist, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Distribution (%)',
+                data: distribution,
+                backgroundColor: '#2563EB',
+                borderColor: '#2563EB',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+                plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: {
+                    backgroundColor: '#F3F4F6',
+                    titleColor: '#1F2937',
+                    bodyColor: '#1F2937',
+                    borderColor: 'rgba(0,0,0,0.06)',
+                    borderWidth: 1
+                }
+            },
+            interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#374151' } },
+                        y: { beginAtZero: true, ticks: { color: '#1F2937', callback: function(v){ return v + '%'; } }, grid: { color: 'rgba(0,0,0,0.06)' }, suggestedMax: 100 }
+                }
         }
     });
 </script>

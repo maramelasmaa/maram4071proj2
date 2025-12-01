@@ -27,8 +27,8 @@
                 <input type="text" name="name" value="{{ $category->name }}" class="form-control">
             </div>
 
-            <button class="btn btn-success">Update</button>
-            <a href="{{ route('category.index') }}" class="btn btn-secondary">Back</a>
+            <button class="btn btn-primary">Update</button>
+            <a href="{{ route('category.index') }}" class="btn btn-outline-primary">Back</a>
         </form>
     </div>
 </div>

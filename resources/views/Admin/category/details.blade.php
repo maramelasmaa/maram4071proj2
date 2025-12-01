@@ -13,7 +13,7 @@
             <p><strong>Name:</strong> {{ $category->name }}</p>
             <p><strong>Classification:</strong> {{ $category->classification->name }}</p>
 
-            <a href="{{ route('category.index') }}" class="btn btn-secondary mt-2">
+            <a href="{{ route('category.index') }}" class="btn btn-outline-primary mt-2">
                 Back
             </a>
 

@@ -12,7 +12,7 @@
             <p><strong>ID:</strong> {{ $classification->id }}</p>
             <p><strong>Name:</strong> {{ $classification->name }}</p>
 
-            <a href="{{ route('classification.index') }}" class="btn btn-secondary mt-2">
+            <a href="{{ route('classification.index') }}" class="btn btn-outline-primary mt-2">
                 Back
             </a>
 

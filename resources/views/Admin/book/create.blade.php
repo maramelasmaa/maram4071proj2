@@ -9,26 +9,25 @@
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <form action="{{ route('book.store') }}" method="POST">
+            <form action="{{ route('book.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3">
                     <label class="form-label">Title</label>
                     <input type="text"
-                           name="titel"
-                           value="{{ old('titel') }}"
-                           class="form-control @error('titel') is-invalid @enderror"
+                           name="title"
+                           value="{{ old('title') }}"
+                           class="form-control @error('title') is-invalid @enderror"
                            required>
-                    @error('titel')
+                    @error('title')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Picture (URL or path)</label>
-                    <input type="text"
+                    <label class="form-label">Picture (upload)</label>
+                    <input type="file"
                            name="Picture"
-                           value="{{ old('Picture') }}"
                            class="form-control @error('Picture') is-invalid @enderror">
                     @error('Picture')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -114,8 +113,8 @@
                     </div>
                 </div>
 
-                <button class="btn btn-success">Save</button>
-                <a href="{{ route('book.index') }}" class="btn btn-secondary">Back</a>
+                <button class="btn btn-primary">Save</button>
+                <a href="{{ route('book.index') }}" class="btn btn-outline-primary">Back</a>
 
             </form>
 

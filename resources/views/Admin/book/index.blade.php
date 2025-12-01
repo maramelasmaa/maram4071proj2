@@ -29,13 +29,18 @@
 
                 <tbody>
                     @foreach($books as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->titel }}</td>
-                            <td>{{ $item->author }}</td>
-                            <td>{{ $item->type?->name ?? 'No Type' }}</td>
-                            <td>{{ $item->price }}</td>
-                            <td>{{ $item->quantity }}</td>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    @if($item->Picture)
+                                        <img src="{{ $item->Picture }}" alt="thumb" style="height:48px;width:auto;object-fit:cover;" class="me-2">
+                                    @endif
+                                    {{ $item->title ?? $item->titel }}
+                                </td>
+                                <td>{{ $item->author }}</td>
+                                <td>{{ $item->type?->name ?? 'No Type' }}</td>
+                                <td>{{ $item->price }}</td>
+                                <td>{{ $item->quantity }}</td>
 
                             <td>
                                 {{-- Details --}}

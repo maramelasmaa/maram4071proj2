@@ -26,8 +26,8 @@
                     @enderror
                 </div>
 
-                <button class="btn btn-success">Update</button>
-                <a href="{{ route('classification.index') }}" class="btn btn-secondary">Back</a>
+                <button class="btn btn-primary">Update</button>
+                <a href="{{ route('classification.index') }}" class="btn btn-outline-primary">Back</a>
             </form>
 
         </div>

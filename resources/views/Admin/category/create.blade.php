@@ -44,8 +44,8 @@
                 </div>
 
                 {{-- Buttons --}}
-                <button class="btn btn-success">Save</button>
-                <a href="{{ route('category.index') }}" class="btn btn-secondary">Back</a>
+                <button class="btn btn-primary">Save</button>
+                <a href="{{ route('category.index') }}" class="btn btn-outline-primary">Back</a>
 
             </form>
 

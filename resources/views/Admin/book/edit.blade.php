@@ -9,25 +9,35 @@
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <form action="{{ route('book.update', $book->id) }}" method="POST">
+            <form action="{{ route('book.update', $book->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text"
-                           name="titel"
-                           value="{{ old('titel', $book->titel) }}"
-                           class="form-control"
-                           required>
+                          <input type="text"
+                              name="title"
+                              value="{{ old('title', $book->title) }}"
+                              class="form-control @error('title') is-invalid @enderror"
+                              required>
+                          @error('title')
+                           <div class="invalid-feedback">{{ $message }}</div>
+                          @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Picture (URL or path)</label>
-                    <input type="text"
+                    <label class="form-label">Picture</label>
+                    @if($book->Picture)
+                        <div class="mb-2">
+                            <img src="{{ $book->Picture }}" alt="Book Image" class="img-thumbnail" style="max-height:150px;">
+                        </div>
+                    @endif
+                    <input type="file"
                            name="Picture"
-                           value="{{ old('Picture', $book->Picture) }}"
-                           class="form-control">
+                           class="form-control @error('Picture') is-invalid @enderror">
+                    @error('Picture')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
@@ -89,8 +99,8 @@
                     </div>
                 </div>
 
-                <button class="btn btn-success">Update</button>
-                <a href="{{ route('book.index') }}" class="btn btn-secondary">Back</a>
+                <button class="btn btn-primary">Update</button>
+                <a href="{{ route('book.index') }}" class="btn btn-outline-primary">Back</a>
 
             </form>
 

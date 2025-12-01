@@ -14,6 +14,7 @@ class typeController extends Controller
         $types = Type::with('category')->get();
         return view('Admin.type.index', compact('types'));
     }
+    
 
     public function create()
     {
@@ -31,7 +32,7 @@ class typeController extends Controller
 
         Type::create($input);
 
-        return redirect()->route('type.index')->with('success', 'Type added!');
+        return redirect()->route('type.index')->with('success', 'Type added!'); 
     }
 
     public function show(Type $type)
