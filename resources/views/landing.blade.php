@@ -7,7 +7,9 @@
     {{-- Custom Landing Nav --}}
     <nav class="sticky top-0 z-50 bg-[#07010D]/70 backdrop-blur-xl">
         <div class="h-24 flex items-center justify-between ui-container">
-            <span class="serif text-2xl font-bold text-white tracking-tighter uppercase">Dev<span class="text-purple-200/70">.</span>B</span>
+            <a href="{{ route('user.Home.index') }}" class="heading-font text-2xl font-black tracking-tighter text-white uppercase">
+                DEV<span class="text-yellow-500">BOOKS</span>
+            </a>
             <div class="flex gap-8 items-center">
                 <a href="{{ route('user.login') }}" class="text-xs font-bold uppercase tracking-widest text-purple-200/70 hover:text-white transition-colors">Login</a>
                 <a href="{{ route('user.register') }}" class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest">Join The Library</a>
