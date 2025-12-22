@@ -24,12 +24,16 @@ class AuthController extends Controller
 
         $admin = Admin::where('email', $credentials['email'])->first();
 
-        if ($admin && Hash::check($credentials['password'], $admin->password)) {
+        if (!$admin) {
+            return back()->with('error', 'No account found with that email address.');
+        }
+
+        if (Hash::check($credentials['password'], $admin->password)) {
             Auth::guard('admin')->login($admin);
             return redirect()->route('admin.dashboard.index')->with('success', 'Welcome!');
         }
 
-        return back()->with('error', 'Invalid email or password');
+        return back()->with('error', 'Incorrect password.');
     }
 
     public function Logout(Request $request)
@@ -82,11 +86,15 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if ($user && Hash::check($credentials['password'], $user->password)) {
+        if (!$user) {
+            return back()->with('error', 'No account found with that email address.');
+        }
+
+        if (Hash::check($credentials['password'], $user->password)) {
             Auth::guard('web')->login($user);
             return redirect()->route('user.books.index')->with('success', 'Welcome!');
         }
 
-        return back()->with('error', 'Invalid email or password');
+        return back()->with('error', 'Incorrect password.');
     }
 }

@@ -83,6 +83,30 @@
             <p class="text-purple-200/70 text-sm mt-1">Please enter your account details.</p>
         </div>
 
+        @if($errors->any())
+            <div class="mb-6 p-4 bg-rose-600 text-white rounded-2xl">
+                <ul class="text-sm font-bold list-disc pl-5 space-y-1">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-[#07010d] border border-yellow-600/20 text-white rounded-2xl flex items-center gap-3">
+                <i class="bi bi-check-circle text-lg"></i>
+                <p class="text-sm font-bold">{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-rose-600 text-white rounded-2xl flex items-center gap-3">
+                <i class="bi bi-exclamation-circle text-lg"></i>
+                <p class="text-sm font-bold">{{ session('error') }}</p>
+            </div>
+        @endif
+
         @yield('content')
     </div>
 

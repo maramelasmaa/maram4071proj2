@@ -67,6 +67,21 @@
 
     {{-- Main Content Area --}}
     <main class="relative">
+        <div class="ui-container pt-6">
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-[#1a0b2e] border border-yellow-600/20 text-white rounded-2xl flex items-center gap-3">
+                    <i class="bi bi-check-circle text-lg"></i>
+                    <p class="text-sm font-bold">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-6 p-4 bg-rose-600 text-white rounded-2xl flex items-center gap-3">
+                    <i class="bi bi-exclamation-circle text-lg"></i>
+                    <p class="text-sm font-bold">{{ session('error') }}</p>
+                </div>
+            @endif
+        </div>
         @yield('content')
     </main>
 

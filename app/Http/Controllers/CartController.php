@@ -31,20 +31,30 @@ class CartController extends Controller
             ->where('book_id', $input['book_id'])
             ->first();
 
+        $book = Books::findOrFail($input['book_id']);
+
+        if ((int) $book->qtyInStock <= 0) {
+            return redirect()->back()->with('error', "Out of stock — you can't add this book right now.");
+        }
+
         if (!$cart) {
-            $book = Books::findOrFail($input['book_id']);
             if ($input['quantity'] > $book->qtyInStock) {
-                return redirect()->back()->with('error', "You can't add more than available stock.");
+                return redirect()->back()->with('error', "Only {$book->qtyInStock} left in stock — you can't add {$input['quantity']}.");
             }
 
             Cart::create($input);
             return redirect()->route('user.cart.index')->with('success', 'Added to cart.');
         }
 
-        $cartqty = $cart->quantity + 1;
-        if ($cartqty > $cart->book->qtyInStock) {
-            return redirect()->back()->with('error', "You can't add more than available stock.");
+        if ((int) $book->qtyInStock <= 0) {
+            return redirect()->back()->with('error', 'This book is now out of stock (the last copy was taken).');
         }
+
+        if ((int) $cart->quantity >= (int) $book->qtyInStock) {
+            return redirect()->back()->with('error', "You already have the last available copy in your cart.");
+        }
+
+        $cartqty = $cart->quantity + 1;
 
         $cart->quantity = $cartqty;
         $cart->save();
@@ -53,10 +63,20 @@ class CartController extends Controller
     }
     public function update(Request $request,string $bookid){
         $cart=Cart::where('user_id',auth('web')->id())->where('book_id',$bookid)->first();
-        $cartqty=$cart->quantity +1;
-        if($cartqty> $cart->book->qtyInStock){
-            return redirect()->back()->with('error', "You can't add more than available stock.");
+        if (!$cart) {
+            return redirect()->back()->with('error', "This item isn't in your cart.");
         }
+
+        $book = Books::findOrFail($bookid);
+        if ((int) $book->qtyInStock <= 0) {
+            return redirect()->back()->with('error', 'This book is now out of stock (the last copy was taken).');
+        }
+
+        if ((int) $cart->quantity >= (int) $book->qtyInStock) {
+            return redirect()->back()->with('error', "You already have the last available copy in your cart.");
+        }
+
+        $cartqty=$cart->quantity +1;
         $cart->quantity=$cartqty;
         $cart->save();
         return redirect()->route('user.cart.index')->with('success', 'Updated cart.');

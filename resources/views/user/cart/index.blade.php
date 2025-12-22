@@ -35,7 +35,7 @@
                             <div class="flex items-center gap-6">
                                 <div class="flex items-center border border-yellow-600/20 bg-[#1a0b2e] rounded-full px-2">
                                     <form action="{{ route('user.cart.remove', $item->book_id) }}" method="POST">
-                                        @csrf @method('PATCH')
+                                        @csrf
                                         <button class="p-2 text-purple-200/70 hover:text-white">－</button>
                                     </form>
                                     <span class="px-4 text-sm font-bold">{{ $item->quantity }}</span>
