@@ -9,8 +9,13 @@ use Illuminate\Http\Request;
 class CartController extends Controller
 {
     public function index(){
-        $cart=Cart::where('user_id',auth('web')->id())->get();
-        return view('user.cart.index',compact('cart'));
+        $cart = Cart::with('book')
+            ->where('user_id', auth('web')->id())
+            ->get();
+
+        $estimatedTotal = $cart->sum(fn ($item) => (int) $item->total);
+
+        return view('user.cart.index', compact('cart', 'estimatedTotal'));
     }
 
     public function store(Request $request){

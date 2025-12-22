@@ -1,44 +1,50 @@
-@extends('layout.app')
+@extends('layout.admin')
 
-{{-- Define the specific title for this page --}}
-@section('title', 'Create Classification')
+@section('title', 'Add Classification')
 
-{{-- Define the content block to be inserted into @yield('content') in the layout --}}
 @section('content')
-
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Create New Classification</h2>
-
-        <div class="bg-white p-8 rounded-xl shadow-xl">
-            <!-- Form points to the store route for the ClassificationController -->
-            <form action="{{ route('admin.classifications.store') }}" method="POST">
-                
-                <!-- REQUIRED: CSRF Token for security -->
-                @csrf 
-
-                <div class="mb-6">
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Classification Name</label>
-                    <input type="text" name="name" id="name" required 
-                           class="w-full px-4 py-2 border @error('name') border-red-500 @else border-gray-300 @enderror rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" 
-                           placeholder="e.g., Fiction Books" 
-                           value="{{ old('name') }}">
-                    
-                    <!-- Display validation error -->
-                    @error('name')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="flex justify-end space-x-4">
-                    <!-- Link back to index view -->
-                    <a href="{{ route('admin.classifications.index') }}" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150">Cancel</a>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow hover:bg-indigo-700 transition duration-150">
-                        Save Classification
-                    </button>
-                </div>
-            </form>
-        </div>
+<div class="max-w-3xl mx-auto py-20 px-6">
+    
+    <div class="mb-10 text-center">
+        <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-600 tracking-tight luxury-text uppercase">
+            Add Classification
+        </h2>
+        <p class="text-purple-300 mt-3 italic text-sm">Create a new classification.</p>
     </div>
 
+    <div class="bg-[#1a0b2e] border border-yellow-600/30 rounded-3xl p-10 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+            <i class="bi bi-diagram-3-fill text-9xl text-yellow-500"></i>
+        </div>
+
+        <form action="{{ route('admin.classifications.store') }}" method="POST" class="space-y-8 relative z-10">
+            @csrf 
+
+            <div>
+                <label for="name" class="block text-xs font-bold text-yellow-500 uppercase tracking-[0.3em] mb-4">
+                    Classification Nomenclature
+                </label>
+                <input type="text" name="name" id="name" required 
+                       class="w-full bg-purple-900/10 border @error('name') border-red-500 @else border-purple-500/30 @enderror rounded-2xl px-6 py-4 text-white focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 outline-none transition-all duration-300 placeholder-purple-800" 
+                       placeholder="e.g., Digital Manuscripts" 
+                       value="{{ old('name') }}">
+                
+                @error('name')
+                    <p class="mt-3 text-xs font-bold text-red-400 uppercase tracking-widest">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-6 pt-4">
+                <a href="{{ route('admin.classifications.index') }}" 
+                   class="text-xs font-bold text-purple-400 hover:text-yellow-500 transition-colors uppercase tracking-[0.2em] no-underline">
+                    Cancel
+                </a>
+                
+                <button type="submit" class="w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-purple-950 font-black rounded-xl shadow-lg hover:shadow-yellow-500/20 active:scale-95 transition-all uppercase tracking-widest text-xs">
+                    Create Classification
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

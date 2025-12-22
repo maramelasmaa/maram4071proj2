@@ -1,52 +1,52 @@
 @extends('layout.user')
-
-@section('title', 'Create Order')
+@section('title', 'Finalize Order')
 
 @section('content')
-<div class="max-w-xl mx-auto px-4 py-10">
-
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">
-        Order Details
-    </h2>
-
-    <form action="{{ route('orders.store') }}" method="POST" class="space-y-5">
-        @csrf
-
-        <!-- Phone -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">
-                Phone Number
-            </label>
-            <input type="text" name="phonenumber"
-                   class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                   required>
+<div class="ui-container py-20">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-purple-200/70">Secure Checkout</span>
+            <h1 class="serif text-5xl mt-4 mb-2">Delivery Details</h1>
+            <p class="text-purple-200/70 italic">Where should we send your academic collection?</p>
         </div>
 
-        <!-- Location -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">
-                Location
-            </label>
-            <input type="text" name="location"
-                   class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                   required>
-        </div>
+        <form action="{{ route('orders.store') }}" method="POST" class="bg-[#1a0b2e] border border-yellow-600/20 rounded-3xl p-10">
+            @csrf
+            <div class="space-y-8">
+                {{-- Phone Number --}}
+                <div>
+                      <label class="block text-xs font-bold uppercase tracking-widest text-purple-200/70 mb-3">Phone Number</label>
+                    <input type="text" name="phonenumber" required 
+                          class="w-full px-0 py-3 border-b border-yellow-600/20 bg-transparent text-lg text-white focus:border-yellow-600/20 outline-none transition-all placeholder:text-purple-200/70"
+                           placeholder="+1 (000) 000-0000">
+                </div>
 
-        <!-- Note -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">
-                Note (optional)
-            </label>
-            <textarea name="note"
-                      rows="3"
-                      class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-        </div>
+                {{-- Location --}}
+                <div>
+                      <label class="block text-xs font-bold uppercase tracking-widest text-purple-200/70 mb-3">Delivery Location</label>
+                    <input type="text" name="location" required 
+                          class="w-full px-0 py-3 border-b border-yellow-600/20 bg-transparent text-lg text-white focus:border-yellow-600/20 outline-none transition-all placeholder:text-purple-200/70"
+                           placeholder="Campus Building, Room or Home Address">
+                </div>
 
-        <button type="submit"
-                class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold
-                       hover:bg-indigo-700 transition">
-            Confirm Order
-        </button>
-    </form>
+                {{-- Note --}}
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-purple-200/70 mb-3">Special Instructions (Optional)</label>
+                    <textarea name="note" rows="2" 
+                              class="w-full px-0 py-3 border-b border-yellow-600/20 bg-transparent text-lg text-white focus:border-yellow-600/20 outline-none transition-all placeholder:text-purple-200/70 resize-none"
+                              placeholder="e.g. Leave at the front desk..."></textarea>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" class="btn-luxury w-full justify-center py-5 text-base tracking-widest uppercase">
+                        Confirm & Place Order
+                    </button>
+                    <a href="{{ route('user.cart.index') }}" class="block text-center mt-6 text-xs font-bold uppercase tracking-widest text-purple-200/70 hover:text-white transition-colors">
+                        Return to Bag
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection

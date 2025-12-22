@@ -1,19 +1,16 @@
 <?php
 
 use App\Http\Controllers\Admin\BookController;
-use App\Http\Controllers\Admin\categorycontroller;
-use App\Http\Controllers\Admin\classificationcontroller;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ClassificationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\User\orderController;
+use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\UserBookController;
-use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 
 Route::get('/', function () {
     return view('landing');
@@ -23,7 +20,7 @@ Route::get('/', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
 
 Route::middleware('auth:admin')->group(function () {
-Route::resource('classifications',classificationcontroller::class)->names(
+Route::resource('classifications', ClassificationController::class)->names(
     ['index'=>'classifications.index',
     'show'=>'classifications.show',
     'create'=>'classifications.create',
@@ -33,7 +30,7 @@ Route::resource('classifications',classificationcontroller::class)->names(
     'destroy'=>'classifications.destroy',
 ]);
 
-Route::resource('categories',categorycontroller::class)->names(
+Route::resource('categories', CategoryController::class)->names(
     ['index'=>'categories.index',
     'show'=>'categories.show',
     'create'=>'categories.create',
@@ -74,49 +71,49 @@ Route::get('/login', [AuthController::class, 'adminLogin'])->name('login');
 Route::post('/Checklogin', [AuthController::class, 'adminCheckLogin'])->name('check');
 });
 
-Route::middleware('auth:web')->group(function () {
+Route::prefix('user')->group(function () {
+    Route::get('/login', [AuthController::class, 'userLogin'])->name('user.login');
+    Route::post('/check', [AuthController::class, 'userCheckLogin'])->name('user.check');
 
-Route::resource('user/books', UserBookController::class)
-    ->only(['index'])
-    ->names(['index' => 'user.books.index']);
+    Route::get('/register', [AuthController::class, 'userRegister'])->name('user.register');
+    Route::post('/register', [AuthController::class, 'userStoreRegister'])->name('user.register.store');
 
-Route::resource('user/cart',CartController::class)->names(
-    ['index'=>'user.cart.index',
-    'show'=>'cart.show',
-    'create'=>'cart.create',
-    'update'=>'cart.update',
-    'edit'=>'cart.edit',
-    'store'=>'cart.store',
-    'destroy'=>'cart.destroy',
-]);
-Route::post('user/cart/{book}/remove', [CartController::class, 'remove'])
-    ->name('cart.remove');
+    // Logged-in user area
+    Route::middleware('auth:web')->group(function () {
+        Route::get('/home', [UserBookController::class, 'index'])->name('user.Home.index');
+        Route::get('/books/search', [UserBookController::class, 'search'])->name('user.books.search');
+        Route::resource('books', UserBookController::class)
+            ->only(['index'])
+            ->names(['index' => 'user.books.index']);
 
+        Route::resource('cart', CartController::class)->names(
+            ['index'=>'user.cart.index',
+            'show'=>'user.cart.show',
+            'create'=>'user.cart.create',
+            'update'=>'user.cart.update',
+            'edit'=>'user.cart.edit',
+            'store'=>'user.cart.store',
+            'destroy'=>'user.cart.destroy',
+        ]);
+        Route::post('cart/{book}/remove', [CartController::class, 'remove'])
+            ->name('user.cart.remove');
 
-Route::get('/user/home', [UserBookController::class, 'index'])->name('user.Home.index');
-Route::get('/user/books/search', [UserBookController::class, 'search'])->name('user.books.search');
+        Route::resource('orders', OrderController::class)
+            ->only(['index', 'show', 'store'])
+            ->names([
+                'index' => 'orders.index',
+                'show'  => 'orders.show',
+                'store' => 'orders.store',
+            ]);
 
-Route::resource('user/orders', orderController::class)
-    ->only(['index', 'show', 'store'])
-    ->names([
-        'index' => 'orders.index',
-        'show'  => 'orders.show',
-        'store' => 'orders.store',
-    ]);
-    
-Route::get('user/checkout', [orderController::class, 'checkout'])
-    ->name('orders.checkout');
+        Route::get('checkout', [OrderController::class, 'checkout'])
+            ->name('orders.checkout');
 
-Route::post('user/logout', [AuthController::class, 'Logout'])->name('logout');
+        Route::post('logout', [AuthController::class, 'Logout'])->name('logout');
+    });
 });
 
-Route::get('/user/login', [AuthController::class, 'userLogin'])->name('user.login');
-Route::post('/user/check', [AuthController::class, 'userCheckLogin'])->name('user.check');
 
-Route::get('/user/register', [AuthController::class, 'userRegister'])->name('user.register');
-Route::post('/user/register', [AuthController::class, 'userStoreRegister'])->name('user.register.store');
-
-
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::get('/login/form', [LoginController::class, 'showLoginForm'])->name('login.form');
-Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
+Route::get('/login', function () {
+    return redirect()->route('user.login');
+})->name('login');

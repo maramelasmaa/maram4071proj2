@@ -25,8 +25,10 @@ class Cart extends Model
     protected $appends = ['total'];
     //doesn't save database
 
-    public function getTotalattribute(){
-       return $this->qtyInStock * $this->book->price;
+    public function getTotalAttribute()
+    {
+        $price = (int) ($this->book->price ?? 0);
+        return (int) $this->quantity * $price;
     }
     public function decrease(){
         return $this->book()->update(

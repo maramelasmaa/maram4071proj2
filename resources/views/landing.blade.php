@@ -1,174 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Welcome | Online Bookstore</title>
+@extends('layout.user')
+@section('title', 'Dev Bookstore | The Academic Standard')
+@section('hide_navbar', '1')
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-
-<body class="min-h-screen">
-
-<!-- Header -->
-<header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
-    <div class="ui-container">
-        <div class="flex items-center justify-between gap-4 py-3">
-            <div class="flex items-center gap-3">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-                    <i class="bi bi-journal-bookmark-fill"></i>
-                </span>
-                <div class="leading-tight">
-                    <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Academic Bookstore</div>
-                    <h1 class="text-lg font-bold tracking-tight text-slate-900">MyBookStore</h1>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <a href="{{ route('user.register') }}" class="ui-btn ui-btn-secondary no-underline">
-                    <i class="bi bi-person-plus"></i>
-                    Register
-                </a>
-                <a href="{{ route('login') }}" class="ui-btn ui-btn-primary no-underline">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Login
-                </a>
+@section('content')
+<div class="min-h-screen">
+    {{-- Custom Landing Nav --}}
+    <nav class="sticky top-0 z-50 bg-[#07010D]/70 backdrop-blur-xl">
+        <div class="h-24 flex items-center justify-between ui-container">
+            <span class="serif text-2xl font-bold text-white tracking-tighter uppercase">Dev<span class="text-purple-200/70">.</span>B</span>
+            <div class="flex gap-8 items-center">
+                <a href="{{ route('user.login') }}" class="text-xs font-bold uppercase tracking-widest text-purple-200/70 hover:text-white transition-colors">Login</a>
+                <a href="{{ route('user.register') }}" class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest">Join The Library</a>
             </div>
         </div>
-    </div>
-</header>
+    </nav>
 
-<!-- Hero Section -->
-<section class="bg-gradient-to-b from-slate-50 to-white">
-    <div class="ui-container py-14 lg:py-20">
-        <div class="grid items-center gap-10 lg:grid-cols-2">
-            <div>
-                <p class="ui-kicker">Bookstore • Research • Academic</p>
-                <h2 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-                    A clean, research-inspired platform for discovering books.
-                </h2>
-                <p class="mt-4 text-lg text-slate-600">
-                    Browse titles, manage your cart, and place orders with clarity—while admins keep the catalog organized.
-                </p>
-
-                <div class="mt-8 flex flex-wrap items-center gap-3">
-                    <a href="{{ route('user.register') }}" class="ui-btn ui-btn-primary no-underline">
-                        <i class="bi bi-person-plus"></i>
-                        Register
-                    </a>
-                    <a href="{{ route('login') }}" class="ui-btn ui-btn-secondary no-underline">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Login
-                    </a>
-                    <a href="#about" class="ui-btn ui-btn-ghost no-underline">
-                        <i class="bi bi-info-circle"></i>
-                        About
-                    </a>
+    {{-- Hero Section --}}
+    <section class="relative h-[90vh] flex items-center">
+        <div class="ui-container grid lg:grid-cols-2 gap-12 relative z-10">
+            <div class="max-w-xl">
+                <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-purple-200/70 block mb-6">Curated Academic Inventory</span>
+                <h1 class="serif text-7xl lg:text-9xl leading-[0.85] mb-8">The <br>Modern <br><span class="italic text-purple-200/70">Scholar.</span></h1>
+                <p class="text-lg text-purple-200/70 leading-relaxed mb-12 max-w-sm">A meticulously curated collection of technical titles and academic essentials, delivered to your campus door.</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ route('user.Home.index') }}" class="btn-luxury px-10 py-5">Enter Collection</a>
+                    <a href="#about" class="btn-outline px-10 py-5">Our Philosophy</a>
                 </div>
             </div>
-
-            <div class="ui-card overflow-hidden">
-                <img
-                    src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Books"
-                    class="h-80 w-full object-cover sm:h-96"
-                >
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section id="features" class="border-t border-slate-200 bg-white">
-    <div class="ui-container py-14 lg:py-20">
-        <div class="text-center">
-            <h3 class="text-3xl font-bold tracking-tight text-slate-900">Platform features</h3>
-            <p class="mt-2 text-slate-600">Everything you need for a professional bookstore workflow.</p>
-        </div>
-
-        <div class="mt-10 grid gap-6 md:grid-cols-3">
-            <div class="ui-card">
-                <div class="ui-card-body">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
-                        <i class="bi bi-search"></i>
-                    </div>
-                    <h4 class="text-lg font-semibold text-slate-900">Book catalog</h4>
-                    <p class="mt-1 text-sm text-slate-600">Browse titles with categories, types, and stock visibility.</p>
-                </div>
-            </div>
-
-            <div class="ui-card">
-                <div class="ui-card-body">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
-                        <i class="bi bi-cart3"></i>
-                    </div>
-                    <h4 class="text-lg font-semibold text-slate-900">Cart system</h4>
-                    <p class="mt-1 text-sm text-slate-600">Add items, adjust quantities, and checkout smoothly.</p>
-                </div>
-            </div>
-
-            <div class="ui-card">
-                <div class="ui-card-body">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                    <h4 class="text-lg font-semibold text-slate-900">Order tracking</h4>
-                    <p class="mt-1 text-sm text-slate-600">View order history and details with clarity.</p>
+            <div class="hidden lg:block relative">
+                <div class="absolute inset-0 bg-[#1a0b2e] rounded-[4rem] rotate-3 -z-10 translate-y-8 border border-yellow-600/20"></div>
+                <div class="max-w-md xl:max-w-lg mx-auto">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800" alt="Bookshelf" class="w-full h-auto max-h-[32rem] object-cover rounded-[4rem] shadow-2xl grayscale brightness-110">
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- About Us Section -->
-<section id="about" class="border-t border-slate-200 bg-slate-50">
-    <div class="ui-container py-14 lg:py-20">
-        <div class="text-center">
-            <h3 class="text-3xl font-bold tracking-tight text-slate-900">About</h3>
-            <p class="mt-2 text-slate-600">Built for readers and administrators alike.</p>
-        </div>
-
-        <div class="mt-10 grid items-center gap-10 md:grid-cols-2">
-            <div class="ui-card overflow-hidden">
-                <img
-                    src="https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849825_1280.jpg"
-                    alt="About us"
-                    class="h-80 w-full object-cover"
-                >
-            </div>
-
-            <div class="ui-card">
-                <div class="ui-card-body">
-                    <p class="text-lg text-slate-700">
-                        MyBookStore was created with a simple mission:
-                        <strong class="font-semibold text-indigo-700">make book browsing and ordering clear, fast, and enjoyable.</strong>
-                    </p>
-                    <p class="mt-4 text-sm text-slate-600">
-                        Users can explore books, manage their cart, place orders, and track history. Admins can manage categories,
-                        types, and classifications with a clean dashboard experience.
-                    </p>
-                    <p class="mt-4 text-sm text-slate-600">
-                        Whether you're a reader looking for your next title or an admin managing a growing library, this platform is designed
-                        for clarity and productivity.
-                    </p>
+    {{-- Features Section --}}
+    <section id="about" class="py-32">
+        <div class="ui-container">
+            <div class="grid md:grid-cols-3 gap-20">
+                <div class="space-y-4">
+                    <span class="serif text-4xl italic text-purple-200/70 block">01</span>
+                    <h3 class="serif text-2xl">Vetted Catalog</h3>
+                    <p class="text-purple-200/70 text-sm leading-relaxed">We don't stock everything. We stock the right things. Every title is approved for current academic standards.</p>
+                </div>
+                <div class="space-y-4">
+                    <span class="serif text-4xl italic text-purple-200/70 block">02</span>
+                    <h3 class="serif text-2xl">Campus Ready</h3>
+                    <p class="text-purple-200/70 text-sm leading-relaxed">Direct delivery to university buildings and dorms. We understand student life because we are part of it.</p>
+                </div>
+                <div class="space-y-4">
+                    <span class="serif text-4xl italic text-purple-200/70 block">03</span>
+                    <h3 class="serif text-2xl">Simple Logistics</h3>
+                    <p class="text-purple-200/70 text-sm leading-relaxed">Real-time inventory tracking and a seamless checkout process. No more waiting for standard shipping.</p>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Footer -->
-<footer class="border-t border-slate-200 bg-white">
-    <div class="ui-container py-8 text-center">
-        <p class="text-sm text-slate-600">© {{ date('Y') }} MyBookStore — All Rights Reserved</p>
-    </div>
-</footer>
-
-</body>
-</html>
+    {{-- Footer/CTA --}}
+    <footer class="py-24 bg-[#1a0b2e] border-t border-yellow-600/20 text-center">
+        <div class="ui-container">
+            <h2 class="serif text-5xl mb-10">Start your semester right.</h2>
+            <a href="{{ route('user.register') }}" class="btn-luxury mx-auto">Create Your Account</a>
+            <p class="mt-8 text-[10px] font-bold text-purple-200/70 uppercase tracking-widest">&copy; {{ date('Y') }} Dev Bookstore Professional Editions</p>
+        </div>
+    </footer>
+</div>
+@endsection

@@ -1,149 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Panel')</title>
+@extends('layout.user')
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+@section('title', 'Browse Books')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-
-<body class="min-h-screen">
-
-    <div class="min-h-screen lg:flex">
-
-        <!-- Sidebar (desktop) -->
-        <aside class="hidden lg:flex lg:w-72 lg:flex-col lg:border-r lg:border-slate-200 lg:bg-white">
-            <div class="px-6 py-5">
-                <div class="flex items-center gap-3">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-                        <i class="bi bi-speedometer2 text-base"></i>
-                    </span>
-                    <div>
-                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Admin</div>
-                        <div class="text-lg font-bold tracking-tight text-slate-900">Bookstore Console</div>
-                    </div>
-                </div>
-            </div>
-
-            <nav class="px-3 pb-6">
-                <a href="{{ route('admin.dashboard.index') }}" class="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                    <i class="bi bi-grid-1x2"></i>
-                    Dashboard
-                </a>
-                <a href="{{ route('admin.books.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                    <i class="bi bi-book"></i>
-                    Books
-                </a>
-                <a href="{{ route('admin.categories.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                    <i class="bi bi-tags"></i>
-                    Categories
-                </a>
-                <a href="{{ route('admin.classifications.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                    <i class="bi bi-diagram-3"></i>
-                    Classifications
-                </a>
-                <a href="{{ route('admin.types.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                    <i class="bi bi-collection"></i>
-                    Types
-                </a>
-
-                <div class="mt-6 px-4">
-                    <div class="h-px bg-slate-200"></div>
-                </div>
-
-                <div class="mt-4 px-4">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="ui-btn ui-btn-danger w-full justify-center">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main column -->
-        <div class="flex min-h-screen flex-1 flex-col">
-            <!-- Top bar -->
-            <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
-                <div class="ui-container">
-                    <div class="flex items-center justify-between gap-3 py-3">
-                        <div class="flex items-center gap-3">
-                            <div class="lg:hidden">
-                                <details class="relative">
-                                    <summary class="ui-btn ui-btn-secondary list-none">
-                                        <i class="bi bi-list"></i>
-                                        <span class="sr-only">Open menu</span>
-                                    </summary>
-                                    <div class="absolute left-0 mt-2 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                                        <div class="p-2">
-                                            <a href="{{ route('admin.dashboard.index') }}" class="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                                                <i class="bi bi-grid-1x2"></i>
-                                                Dashboard
-                                            </a>
-                                            <a href="{{ route('admin.books.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                                                <i class="bi bi-book"></i>
-                                                Books
-                                            </a>
-                                            <a href="{{ route('admin.categories.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                                                <i class="bi bi-tags"></i>
-                                                Categories
-                                            </a>
-                                            <a href="{{ route('admin.classifications.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                                                <i class="bi bi-diagram-3"></i>
-                                                Classifications
-                                            </a>
-                                            <a href="{{ route('admin.types.index') }}" class="mt-1 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 no-underline">
-                                                <i class="bi bi-collection"></i>
-                                                Types
-                                            </a>
-
-                                            <div class="my-2 h-px bg-slate-200"></div>
-
-                                            <form method="POST" action="{{ route('logout') }}">
-                                                @csrf
-                                                <button type="submit" class="ui-btn ui-btn-danger w-full justify-center">
-                                                    <i class="bi bi-box-arrow-right"></i>
-                                                    Logout
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </details>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-                                    <i class="bi bi-shield-lock"></i>
-                                </span>
-                                <div class="leading-tight">
-                                    <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Admin Panel</div>
-                                    <div class="text-base font-bold tracking-tight text-slate-900">@yield('title', 'Dashboard')</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <span class="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
-                            <i class="bi bi-cloud-check"></i>
-                            Production-ready UI
-                        </span>
-                    </div>
-                </div>
-            </header>
-
-            <main class="ui-page">
-                @yield('content')
-            </main>
-        </div>
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="border-b border-yellow-600/20 pb-8 mb-8">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">Book Collection</h1>
+        <p class="mt-2 text-lg text-purple-200/70">Browse and search our complete library of titles.</p>
     </div>
 
-</body>
-</html>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="md:col-span-2">
+            <form action="{{ route('books.index') }}" method="GET" class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-purple-200/70">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" name="search" value="{{ request('search') }}" 
+                       class="block w-full pl-10 pr-3 py-3 border border-yellow-600/20 rounded-lg bg-[#07010d] text-white placeholder:text-purple-200/70 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-600/20 transition duration-150" 
+                       placeholder="Search by title, author, or ISBN...">
+            </form>
+        </div>
+        
+        <select class="block w-full py-3 pl-3 pr-10 border border-yellow-600/20 bg-[#07010d] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/20">
+            <option>All Categories</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}">{{ $category->name }}</option>
+            @endforeach
+        </select>
+
+        <select class="block w-full py-3 pl-3 pr-10 border border-yellow-600/20 bg-[#07010d] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500/20">
+            <option>Sort by: Newest</option>
+            <option>Title (A-Z)</option>
+            <option>Stock Level</option>
+        </select>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        @forelse ($books as $book)
+        <div class="flex flex-col bg-[#1a0b2e] border border-yellow-600/20 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="aspect-[3/4] bg-[#07010d] flex items-center justify-center border-b border-yellow-600/20">
+                <i class="bi bi-book text-purple-200/70 text-6xl"></i>
+            </div>
+
+            <div class="p-5 flex flex-col flex-grow">
+                <div class="mb-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#07010d] border border-yellow-600/20 text-white">
+                        {{ $book->category->name }}
+                    </span>
+                </div>
+                <h3 class="text-lg font-bold text-white line-clamp-2 mb-1">
+                    {{ $book->title }}
+                </h3>
+                <p class="text-sm text-purple-200/70 mb-4 italic">by {{ $book->author }}</p>
+                
+                <div class="mt-auto pt-4 border-t border-yellow-600/20 flex items-center justify-between">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-purple-200/70 uppercase font-bold tracking-wider">Availability</span>
+                        <span class="text-sm font-semibold {{ $book->qtyInStock > 0 ? 'text-white' : 'text-purple-200/70' }}">
+                            {{ $book->qtyInStock > 0 ? $book->qtyInStock . ' in stock' : 'Out of stock' }}
+                        </span>
+                    </div>
+                    <a href="{{ route('books.show', $book->id) }}" 
+                       class="inline-flex items-center px-4 py-2 border border-yellow-600/20 text-sm font-medium rounded-md text-white bg-gradient-to-r from-yellow-400 to-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500/20 transition-colors">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-span-full py-20 text-center border border-dashed border-yellow-600/20 rounded-2xl">
+            <i class="bi bi-journal-x text-5xl text-purple-200/70"></i>
+            <p class="mt-4 text-purple-200/70 font-medium">No books match your current search criteria.</p>
+        </div>
+        @endforelse
+    </div>
+
+    <div class="mt-12">
+        {{ $books->links() }}
+    </div>
+</div>
+@endsection

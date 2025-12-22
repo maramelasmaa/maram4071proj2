@@ -7,6 +7,9 @@ use App\Models\Category;
 use App\Models\Classification;
 use App\Models\Type;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class BooksSeeder extends Seeder
 {
@@ -15,40 +18,53 @@ class BooksSeeder extends Seeder
      */
     public function run(): void
     {
-        // Build a small catalog: Classification -> Category -> Type
+        // Reset data so we always seed a clean catalog with exactly 50 books.
+        Schema::disableForeignKeyConstraints();
+        Books::truncate();
+        Type::truncate();
+        Category::truncate();
+        Classification::truncate();
+        Schema::enableForeignKeyConstraints();
+
+        // Seed a mixed catalog: Classification -> Category -> Type
         $catalog = [
             'Computer Science' => [
                 'Programming' => [
                     ['name' => 'PHP', 'edition' => '3rd'],
                     ['name' => 'JavaScript', 'edition' => '2nd'],
                     ['name' => 'Python', 'edition' => '2nd'],
+                    ['name' => 'Java', 'edition' => '2nd'],
+                ],
+                'Databases' => [
+                    ['name' => 'SQL', 'edition' => '2nd'],
+                    ['name' => 'NoSQL', 'edition' => '1st'],
+                    ['name' => 'Data Modeling', 'edition' => '1st'],
                 ],
                 'Software Engineering' => [
                     ['name' => 'Architecture', 'edition' => '1st'],
                     ['name' => 'Testing', 'edition' => '1st'],
                     ['name' => 'Design Patterns', 'edition' => '1st'],
                 ],
-                'Databases' => [
-                    ['name' => 'SQL', 'edition' => '2nd'],
-                    ['name' => 'Data Modeling', 'edition' => '1st'],
-                ],
-                'Operating Systems' => [
-                    ['name' => 'OS Concepts', 'edition' => '1st'],
-                    ['name' => 'Linux', 'edition' => '1st'],
-                ],
-                'Algorithms' => [
-                    ['name' => 'Algorithms', 'edition' => '3rd'],
-                    ['name' => 'Data Structures', 'edition' => '2nd'],
-                ],
             ],
             'Business' => [
                 'Management' => [
                     ['name' => 'Leadership', 'edition' => '1st'],
                     ['name' => 'Product', 'edition' => '1st'],
+                    ['name' => 'Operations', 'edition' => '1st'],
                 ],
                 'Finance' => [
                     ['name' => 'Accounting', 'edition' => '1st'],
                     ['name' => 'Economics', 'edition' => '1st'],
+                ],
+            ],
+            'Science' => [
+                'Mathematics' => [
+                    ['name' => 'Calculus', 'edition' => '2nd'],
+                    ['name' => 'Linear Algebra', 'edition' => '1st'],
+                ],
+                'Physics' => [
+                    ['name' => 'Mechanics', 'edition' => '1st'],
+                    ['name' => 'Electricity & Magnetism', 'edition' => '1st'],
                 ],
             ],
             'Arts & Humanities' => [
@@ -63,251 +79,84 @@ class BooksSeeder extends Seeder
             ],
         ];
 
-        $typeMap = [];
-        foreach ($catalog as $className => $categories) {
-            $classification = Classification::updateOrCreate(
-                ['name' => $className],
-                ['name' => $className]
-            );
+        $typeIds = [];
+
+        foreach ($catalog as $classificationName => $categories) {
+            $classification = Classification::create(['name' => $classificationName]);
 
             foreach ($categories as $categoryName => $types) {
-                $category = Category::updateOrCreate(
-                    ['name' => $categoryName, 'class_id' => $classification->id],
-                    ['name' => $categoryName, 'class_id' => $classification->id]
-                );
+                $category = Category::create([
+                    'name' => $categoryName,
+                    'class_id' => $classification->id,
+                ]);
 
                 foreach ($types as $typeInfo) {
-                    $type = Type::updateOrCreate(
-                        [
-                            'name' => $typeInfo['name'],
-                            'edition' => $typeInfo['edition'],
-                            'category_id' => $category->id,
-                        ],
-                        [
-                            'name' => $typeInfo['name'],
-                            'edition' => $typeInfo['edition'],
-                            'category_id' => $category->id,
-                        ]
-                    );
+                    $type = Type::create([
+                        'name' => $typeInfo['name'],
+                        'edition' => $typeInfo['edition'],
+                        'category_id' => $category->id,
+                    ]);
 
-                    $key = $categoryName . '::' . $typeInfo['name'] . '::' . $typeInfo['edition'];
-                    $typeMap[$key] = $type->id;
+                    $typeIds[] = $type->id;
                 }
             }
         }
 
-        $pics = [
-            'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=900&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=900&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=900&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1544717305-2782549b5136?w=900&auto=format&fit=crop',
-        ];
+        // Generate local cover images under storage/app/public so asset('storage/...') works.
+        Storage::disk('public')->makeDirectory('books');
+        $coversDir = Storage::disk('public')->path('books');
 
-        $books = [
-            [
-                'title' => 'Clean Code',
-                'author' => 'Robert C. Martin',
-                'description' => 'A handbook of agile software craftsmanship with practical guidance for writing cleaner code.',
-                'price' => 450,
-                'year' => 2008,
-                'publisher' => 'Prentice Hall',
-                'picture' => 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=900&auto=format&fit=crop',
-                'type_key' => 'Software Engineering::Architecture::1st',
-            ],
-            [
-                'title' => 'The Pragmatic Programmer',
-                'author' => 'Andrew Hunt & David Thomas',
-                'description' => 'Classic advice and techniques for pragmatic software development.',
-                'price' => 500,
-                'year' => 1999,
-                'publisher' => 'Addison-Wesley',
-                'picture' => 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&auto=format&fit=crop',
-                'type_key' => 'Software Engineering::Architecture::1st',
-            ],
-            [
-                'title' => 'Introduction to Algorithms',
-                'author' => 'Cormen, Leiserson, Rivest, Stein',
-                'description' => 'Comprehensive reference covering a broad range of algorithms and data structures.',
-                'price' => 800,
-                'year' => 2009,
-                'publisher' => 'MIT Press',
-                'picture' => 'https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=900&auto=format&fit=crop',
-                'type_key' => 'Algorithms::Algorithms::3rd',
-            ],
-            [
-                'title' => 'Design Patterns',
-                'author' => 'Erich Gamma et al.',
-                'description' => 'Foundational book describing reusable object-oriented design patterns.',
-                'price' => 650,
-                'year' => 1994,
-                'publisher' => 'Addison-Wesley',
-                'picture' => 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=900&auto=format&fit=crop',
-                'type_key' => 'Software Engineering::Design Patterns::1st',
-            ],
-            [
-                'title' => 'Refactoring',
-                'author' => 'Martin Fowler',
-                'description' => 'Improving the design of existing code through proven refactoring techniques.',
-                'price' => 600,
-                'year' => 2018,
-                'publisher' => 'Addison-Wesley',
-                'picture' => 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=900&auto=format&fit=crop',
-                'type_key' => 'Software Engineering::Architecture::1st',
-            ],
-            [
-                'title' => 'You Don\'t Know JS Yet',
-                'author' => 'Kyle Simpson',
-                'description' => 'A deep dive into core mechanisms of JavaScript and how to use them effectively.',
-                'price' => 320,
-                'year' => 2020,
-                'publisher' => 'Independently published',
-                'picture' => 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=900&auto=format&fit=crop',
-                'type_key' => 'Programming::JavaScript::2nd',
-            ],
-            [
-                'title' => 'Laravel: Up & Running',
-                'author' => 'Matt Stauffer',
-                'description' => 'Practical guide to building modern PHP apps with Laravel.',
-                'price' => 420,
-                'year' => 2019,
-                'publisher' => "O'Reilly Media",
-                'picture' => 'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?w=900&auto=format&fit=crop',
-                'type_key' => 'Programming::PHP::3rd',
-            ],
-            [
-                'title' => 'Effective Java',
-                'author' => 'Joshua Bloch',
-                'description' => 'Best practices for writing robust Java code with clear explanations and examples.',
-                'price' => 550,
-                'year' => 2017,
-                'publisher' => 'Addison-Wesley',
-                'picture' => 'https://images.unsplash.com/photo-1473862177705-1e09f71a6f16?w=900&auto=format&fit=crop',
-                'type_key' => 'Programming::JavaScript::2nd',
-            ],
-            [
-                'title' => 'Operating System Concepts',
-                'author' => 'Silberschatz, Galvin, Gagne',
-                'description' => 'A solid introduction to operating systems principles and design.',
-                'price' => 700,
-                'year' => 2018,
-                'publisher' => 'Wiley',
-                'picture' => 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=900&auto=format&fit=crop',
-                'type_key' => 'Operating Systems::OS Concepts::1st',
-            ],
-            [
-                'title' => 'Database System Concepts',
-                'author' => 'Silberschatz, Korth, Sudarshan',
-                'description' => 'Core concepts of relational databases, SQL, and database design.',
-                'price' => 680,
-                'year' => 2019,
-                'publisher' => 'McGraw-Hill',
-                'picture' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=900&auto=format&fit=crop',
-                'type_key' => 'Databases::SQL::2nd',
-            ],
-        ];
+        $coverPaths = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $filename = 'seed-cover-' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . '.svg';
+            $absPath = $coversDir . DIRECTORY_SEPARATOR . $filename;
 
-        // 40 additional books distributed across categories/types.
-        $series = [
-            [
-                'base_title' => 'Modern PHP Workshop',
-                'author' => 'Faculty Team',
-                'publisher' => 'Academic Press',
-                'year' => 2023,
-                'base_price' => 360,
-                'type_key' => 'Programming::PHP::3rd',
-            ],
-            [
-                'base_title' => 'JavaScript for Interfaces',
-                'author' => 'UI Research Group',
-                'publisher' => 'Campus Editions',
-                'year' => 2022,
-                'base_price' => 340,
-                'type_key' => 'Programming::JavaScript::2nd',
-            ],
-            [
-                'base_title' => 'Python Data Science Notes',
-                'author' => 'Lab Collective',
-                'publisher' => 'Campus Editions',
-                'year' => 2024,
-                'base_price' => 390,
-                'type_key' => 'Programming::Python::2nd',
-            ],
-            [
-                'base_title' => 'Architecture Decision Records',
-                'author' => 'Systems Council',
-                'publisher' => 'Academic Press',
-                'year' => 2021,
-                'base_price' => 420,
-                'type_key' => 'Software Engineering::Architecture::1st',
-            ],
-            [
-                'base_title' => 'Testing Strategies Handbook',
-                'author' => 'Quality Engineering Unit',
-                'publisher' => 'Practical Library',
-                'year' => 2020,
-                'base_price' => 380,
-                'type_key' => 'Software Engineering::Testing::1st',
-            ],
-            [
-                'base_title' => 'Pattern Language Studies',
-                'author' => 'Design Seminar',
-                'publisher' => 'Academic Press',
-                'year' => 2019,
-                'base_price' => 410,
-                'type_key' => 'Software Engineering::Design Patterns::1st',
-            ],
-            [
-                'base_title' => 'Relational SQL Essentials',
-                'author' => 'Database Faculty',
-                'publisher' => 'Practical Library',
-                'year' => 2021,
-                'base_price' => 360,
-                'type_key' => 'Databases::SQL::2nd',
-            ],
-            [
-                'base_title' => 'Data Modeling Studio',
-                'author' => 'Database Faculty',
-                'publisher' => 'Practical Library',
-                'year' => 2022,
-                'base_price' => 370,
-                'type_key' => 'Databases::Data Modeling::1st',
-            ],
-        ];
+            $bg = ['#0b0b12', '#1a0b2e', '#0f172a', '#111827'][($i - 1) % 4];
+            $accent = ['#eab308', '#a855f7', '#60a5fa', '#22c55e'][($i - 1) % 4];
 
-        foreach ($series as $seriesIndex => $s) {
-            for ($volume = 1; $volume <= 5; $volume++) {
-                $books[] = [
-                    'title' => $s['base_title'] . ' — Vol. ' . str_pad((string) $volume, 2, '0', STR_PAD_LEFT),
-                    'author' => $s['author'],
-                    'description' => 'A structured, academic-style volume with exercises, summaries, and practical examples.',
-                    'price' => $s['base_price'] + ($volume * 15),
-                    'year' => $s['year'],
-                    'publisher' => $s['publisher'],
-                    'picture' => $pics[($seriesIndex + $volume) % count($pics)],
-                    'type_key' => $s['type_key'],
-                ];
-            }
+            $svg = <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="$accent" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="$accent" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="800" fill="$bg"/>
+  <rect x="36" y="36" width="528" height="728" rx="28" fill="url(#g)" opacity="0.22"/>
+  <rect x="60" y="84" width="480" height="10" rx="5" fill="$accent" opacity="0.55"/>
+  <text x="60" y="160" fill="#ffffff" font-family="Arial, sans-serif" font-size="40" font-weight="700">Dev Bookstore</text>
+  <text x="60" y="210" fill="#d1d5db" font-family="Arial, sans-serif" font-size="18">Seed Cover #$i</text>
+  <text x="60" y="720" fill="#9ca3af" font-family="Arial, sans-serif" font-size="14">Local image generated by seeder</text>
+</svg>
+SVG;
+
+            File::put($absPath, $svg);
+            $coverPaths[] = 'books/' . $filename;
         }
 
-        foreach ($books as $index => $book) {
-            // Stock cycles 1..5 so you can test “only 1 left”, “only a few left”, etc.
-            $book['qtyInStock'] = ($index % 5) + 1;
+        // Seed 50 books. qtyInStock is always 1..5.
+        $faker = fake();
 
-            $typeId = $typeMap[$book['type_key']] ?? null;
-            if (!$typeId) {
-                // Fallback to a known type if something is mis-keyed.
-                $typeId = reset($typeMap);
-            }
+        $titlePrefixes = ['Intro to', 'Foundations of', 'Applied', 'Practical', 'Modern', 'Essential', 'Advanced', 'Hands-on'];
+        $titleSubjects = ['Systems', 'Algorithms', 'Databases', 'Networks', 'Security', 'Design', 'Architecture', 'Analytics', 'Mathematics', 'Writing', 'Business'];
+        $titleSuffixes = ['Workbook', 'Guide', 'Handbook', 'Notes', 'Edition', 'Course'];
 
-            $payload = $book;
-            unset($payload['type_key']);
-            $payload['type_id'] = $typeId;
+        for ($i = 1; $i <= 50; $i++) {
+            $title = $titlePrefixes[array_rand($titlePrefixes)] . ' ' . $titleSubjects[array_rand($titleSubjects)] . ' ' . $titleSuffixes[array_rand($titleSuffixes)];
+            $title .= ' (' . str_pad((string) $i, 2, '0', STR_PAD_LEFT) . ')';
 
-            Books::updateOrCreate(
-                ['title' => $book['title'], 'author' => $book['author']],
-                $payload
-            );
+            Books::create([
+                'title' => $title,
+                'author' => $faker->name(),
+                'description' => $faker->paragraphs(3, true),
+                'price' => random_int(150, 1200),
+                'qtyInStock' => random_int(1, 5),
+                'year' => random_int(1995, 2025),
+                'publisher' => $faker->company(),
+                'picture' => $coverPaths[array_rand($coverPaths)],
+                'type_id' => $typeIds[array_rand($typeIds)],
+            ]);
         }
     }
 }

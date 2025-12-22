@@ -1,58 +1,39 @@
-@extends('layouts.auth')
-
-@section('title', 'Login - Library')
-@section('form-title', 'Sign in to your account')
+@extends('layout.auth')
+@section('title', 'Login')
+@section('form-title', 'Welcome Back')
 
 @section('content')
+@php
+    $isAdmin = request()->routeIs('admin.*');
+    $action = $isAdmin ? route('admin.check') : route('user.check');
+@endphp
 
-@if(session('error'))
-    <div class="ui-alert ui-alert-error mb-4">
-        {{ session('error') }}
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="ui-alert ui-alert-error mb-4">
-        <ul class="list-disc pl-5 space-y-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<form action="{{ route('login.attempt') }}" method="POST" autocomplete="off" class="space-y-4">
+<form action="{{ $action }}" method="POST" class="space-y-5">
     @csrf
-
-    {{-- Email --}}
     <div>
-        <label class="ui-label">Email</label>
-        <input type="email" name="email" value="{{ old('email') }}" class="ui-input" placeholder="Enter your email" required>
+        <label class="ui-label">Email Address</label>
+        <input type="email" name="email" value="{{ old('email') }}" class="ui-input" placeholder="name@example.com" required>
     </div>
 
-    {{-- Password --}}
     <div>
-        <label class="ui-label">Password</label>
-        <input type="password" name="password" class="ui-input" placeholder="••••••" required>
+        <div class="flex justify-between items-center mb-2">
+            <label class="ui-label mb-0">Password</label>
+            <a href="#" class="text-[10px] font-bold text-purple-200/70 hover:text-white uppercase">Forgot?</a>
+        </div>
+        <input type="password" name="password" class="ui-input" placeholder="••••••••" required>
     </div>
 
-    {{-- Submit --}}
-    <button type="submit" class="ui-btn ui-btn-primary w-full justify-center">
-        <i class="bi bi-box-arrow-in-right"></i>
-        Login
-    </button>
+    <button type="submit" class="btn-black w-full">Sign In</button>
 
-    <div class="flex items-center gap-3 py-2">
-        <div class="h-px flex-1 bg-slate-200"></div>
-        <span class="text-xs font-semibold text-slate-500">or</span>
-        <div class="h-px flex-1 bg-slate-200"></div>
-    </div>
+    @unless($isAdmin)
+        <div class="relative py-2">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-yellow-600/20"></div></div>
+            <div class="relative flex justify-center text-[10px] uppercase"><span class="bg-[#1a0b2e] px-4 text-purple-200/70 font-bold tracking-widest">or</span></div>
+        </div>
 
-    <a href="{{ route('user.register') }}"
-       class="ui-btn ui-btn-secondary w-full justify-center no-underline">
-        <i class="bi bi-person-plus"></i>
-        Create account
-    </a>
+        <a href="{{ route('user.register') }}" class="w-full flex items-center justify-center py-3.5 border border-yellow-600/20 rounded-lg text-sm font-bold text-white bg-[#07010d] transition-all">
+            Create an Account
+        </a>
+    @endunless
 </form>
-
 @endsection

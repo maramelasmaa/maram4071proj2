@@ -1,120 +1,77 @@
 @extends('layout.user')
-
-@section('title', 'My Cart')
+@section('title', 'Your Cart')
 
 @section('content')
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">My Cart</h2>
-
-    @if(session('success'))
-        <div class="mb-6 bg-green-100 text-green-800 px-4 py-3 rounded-lg text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-6 bg-red-100 text-red-700 px-4 py-3 rounded-lg text-sm">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if($cart->count() == 0)
-        <p class="text-gray-600 text-lg">Your cart is empty.</p>
-    @else
-    @php
-        $totalCost = $cart->sum(function ($item) {
-            $unitPrice = (int) (optional($item->book)->price ?? 0);
-            $quantity = (int) ($item->quantity ?? 0);
-            return $unitPrice * $quantity;
-        });
-    @endphp
-    <table class="w-full text-left bg-white rounded-xl shadow-lg">
-        <thead>
-            <tr class="text-gray-500 text-xs font-semibold uppercase tracking-wider border-b">
-                <th class="py-3 px-4">Book</th>
-                <th class="py-3 px-4 w-16 text-center">Qty</th>
-                <th class="py-3 px-4 w-40">Actions</th>
-            </tr>
-        </thead>
-
-        <tbody class="text-gray-700 divide-y divide-gray-100">
-            @foreach ($cart as $item)
-            <tr>
-                <td class="py-4 px-4">
-                    <strong class="text-base text-gray-800">{{ $item->book->title }}</strong><br>
-                    <span class="text-gray-500 text-sm italic">{{ $item->book->author }}</span>
-                </td>
-
-                <td class="py-4 px-4 text-center text-lg font-medium">{{ $item->quantity }}</td>
-
-                <td class="py-4 px-4">
-                    <div class="flex items-center space-x-2">
-
-                        <form action="{{ route('cart.update', $item->book_id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <button
-                                type="submit"
-                                title="Increase Quantity"
-                                class="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full transition duration-150 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                            >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                            </button>
-                        </form>
-
-                        @if ($item->quantity > 1)
-                        <form action="{{ route('cart.remove', $item->book_id) }}" method="POST">
-                            @csrf
-                            <button
-                                type="submit"
-                                title="Decrease Quantity"
-                                class="w-8 h-8 flex items-center justify-center bg-yellow-500 text-white rounded-full transition duration-150 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-                            >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"></path></svg>
-                            </button>
-                        </form>
-                        @endif
-
-                        <form action="{{ route('cart.destroy', $item->book_id) }}" method="POST" class="ml-4">
-                            @csrf
-                            @method('DELETE')
-                            <button
-                                type="submit"
-                                title="Remove All of This Book"
-                                class="flex items-center justify-center px-3 py-2 text-sm bg-red-600 text-white font-medium rounded-lg transition duration-150 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
-                            >
-                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                Remove
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <div class="mt-4 bg-white rounded-xl shadow-lg border border-gray-100">
-        <div class="px-4 py-4 flex items-center justify-between">
-            <div>
-                <div class="text-xs font-semibold uppercase tracking-wider text-gray-500">Total cost</div>
-                <div class="text-sm text-gray-600">Sum of all items in your cart</div>
-            </div>
-            <div class="text-2xl font-bold text-gray-900">{{ number_format($totalCost) }}</div>
-        </div>
+<div class="ui-container py-16">
+    <div class="mb-12 border-b border-yellow-600/20 pb-8">
+        <h1 class="serif text-5xl mb-2">Shopping Bag</h1>
+        <p class="text-purple-200/70 italic">Review your selections for the upcoming term.</p>
     </div>
 
-    {{-- ORDER BUTTON --}}
-<div class="mt-6 flex justify-end">
-    <a href="{{ route('orders.checkout') }}"
-   class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md
-          hover:bg-indigo-700 transition duration-150">
-    🛒 Order Now
-</a>
+    @if($cart->isEmpty())
+        <div class="text-center py-32 bg-[#1a0b2e] rounded-3xl border border-dashed border-yellow-600/20">
+            <h2 class="serif text-2xl mb-4">Your bag is empty</h2>
+            <a href="{{ route('user.Home.index') }}" class="btn-luxury inline-flex mx-auto">Continue Browsing</a>
+        </div>
+    @else
+        <div class="grid lg:grid-cols-12 gap-16">
+            <div class="lg:col-span-8">
+                <div class="divide-y divide-yellow-600/20">
+                    @foreach($cart as $item)
+                    <div class="py-8 flex gap-8 items-start">
+                        <div class="w-32 aspect-[3/4] bg-[#1a0b2e] rounded-lg overflow-hidden shadow-sm border border-yellow-600/20">
+                            @if($item->book?->picture)
+                                <img src="{{ str_starts_with($item->book->picture, 'http') || str_starts_with($item->book->picture, '/') ? $item->book->picture : asset('storage/'.$item->book->picture) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-[#07010d]">
+                                    <i class="bi bi-book text-purple-200/70 text-4xl"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="serif text-xl mb-1">{{ $item->book->title }}</h3>
+                            <p class="text-sm text-purple-200/70 mb-4">By {{ $item->book->author }}</p>
+                            
+                            <div class="flex items-center gap-6">
+                                <div class="flex items-center border border-yellow-600/20 bg-[#1a0b2e] rounded-full px-2">
+                                    <form action="{{ route('user.cart.remove', $item->book_id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <button class="p-2 text-purple-200/70 hover:text-white">－</button>
+                                    </form>
+                                    <span class="px-4 text-sm font-bold">{{ $item->quantity }}</span>
+                                    <form action="{{ route('user.cart.update', $item->book_id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <button class="p-2 text-purple-200/70 hover:text-white">＋</button>
+                                    </form>
+                                </div>
+                                <form action="{{ route('user.cart.destroy', $item->book_id) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <button class="text-xs font-bold uppercase tracking-widest bg-rose-600 text-white px-4 py-2 rounded-full">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
 
-</div>
+            <div class="lg:col-span-4">
+                <div class="bg-[#1a0b2e] border border-yellow-600/20 rounded-2xl p-8 sticky top-32">
+                    <h3 class="serif text-2xl mb-6">Summary</h3>
+                    <div class="space-y-4 text-sm mb-8">
+                        <div class="flex justify-between">
+                            <span class="text-purple-200/70">Total Items</span>
+                            <span class="font-bold">{{ $cart->sum('quantity') }}</span>
+                        </div>
+                        <div class="pt-4 border-t border-yellow-600/20 flex justify-between items-end">
+                            <span class="font-bold">Estimated Total</span>
+                            <span class="text-2xl serif">${{ number_format(($estimatedTotal ?? 0) / 1, 2) }}</span>
+                        </div>
+                    </div>
+                    <a href="{{ route('orders.checkout') }}" class="btn-luxury w-full justify-center py-4">Checkout Now</a>
+                </div>
+            </div>
+        </div>
     @endif
-
 </div>
 @endsection

@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function adminLogin()
     {
-        return view('auth.login');
+        return view('auth.admin-login');
     }
 
     public function adminCheckLogin(Request $request)
@@ -46,7 +46,7 @@ class AuthController extends Controller
 
     public function userLogin()
     {
-        return view('auth.login');
+        return view('auth.user-login');
     }
 
     public function userRegister()

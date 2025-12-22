@@ -15,8 +15,35 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Books::with('bookType')->get();
-        return view('admin.books.index', compact('books'));
+        $term = trim((string) request()->input('q', request()->input('search', '')));
+
+        $query = Books::query()
+            ->with(['bookType.categoryType.Classcategory'])
+            ->orderByDesc('created_at');
+
+        if ($term !== '') {
+            $query->where(function ($q) use ($term) {
+                $q->where('title', 'LIKE', '%' . $term . '%')
+                    ->orWhere('author', 'LIKE', '%' . $term . '%')
+                    ->orWhere('publisher', 'LIKE', '%' . $term . '%');
+
+                if (ctype_digit($term)) {
+                    $q->orWhere('year', (int) $term);
+                }
+            })->orWhereHas('bookType', function ($q) use ($term) {
+                $q->where('name', 'LIKE', '%' . $term . '%')
+                    ->orWhere('edition', 'LIKE', '%' . $term . '%')
+                    ->orWhereHas('categoryType', function ($q) use ($term) {
+                        $q->where('name', 'LIKE', '%' . $term . '%')
+                            ->orWhereHas('Classcategory', function ($q) use ($term) {
+                                $q->where('name', 'LIKE', '%' . $term . '%');
+                            });
+                    });
+            });
+        }
+
+        $books = $query->get();
+        return view('admin.books.index', compact('books', 'term'));
     }
 
     /**
@@ -49,7 +76,7 @@ class BookController extends Controller
 
         if ($request->hasFile('picture')) {
             $path = $request->file('picture')->store('books', 'public');
-            $input['picture'] = Storage::url($path);
+            $input['picture'] = $path;
         }
 
         Books::create($input);
@@ -98,11 +125,11 @@ class BookController extends Controller
 
             // delete old file if exists
             if ($book->picture) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $book->picture));
+                Storage::disk('public')->delete($book->picture);
             }
 
             $path = $request->file('picture')->store('books', 'public');
-            $input['picture'] = Storage::url($path);
+            $input['picture'] = $path;
         }
 
         $book->update($input);
@@ -117,7 +144,7 @@ class BookController extends Controller
     public function destroy(Books $book)
     {
         if ($book->picture) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $book->picture));
+            Storage::disk('public')->delete($book->picture);
         }
 
         $book->delete();

@@ -1,70 +1,90 @@
-@extends('layout.app')
+@extends('layout.admin')
 
-{{-- Define the specific title for this page --}}
-@section('title', 'Category Management')
+@section('title', 'Categories')
 
-{{-- Define the content block to be inserted into @yield('content') in the layout --}}
 @section('content')
+<div class="max-w-7xl mx-auto py-12 px-6">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+        <div>
+            <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-600 tracking-tight luxury-text">
+                Categories
+            </h2>
+            <p class="text-purple-300 mt-2 italic">Manage categories.</p>
+        </div>
         
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">Category Management</h2>
-            <!-- Link to the create route -->
-            <a href="{{ route('admin.categories.create') }}" class="flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow hover:bg-indigo-700 transition duration-150">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                New Category
-            </a>
-        </div>
-
-        <!-- Success Message Handling -->
-        @if(session('success'))
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6" role="alert">
-            <p class="font-bold">Success!</p>
-            <p>{{ session('success') }}</p>
-        </div>
-        @endif
-
-        <div class="bg-white shadow-xl rounded-xl overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-5/12">Category Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-3/12">Classification</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-3/12">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Loop through categories passed from the controller -->
-                    @forelse ($categories as $category)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $category->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $category->name }}</td>
-                        <!-- Display Classification name (assuming category has a 'classification' relationship) -->
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $category->Classcategory->name ?? 'N/A' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                            <!-- Edit Link -->
-                            <a href="{{ route('admin.categories.edit', $category->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                            
-                            <!-- Delete Form -->
-                            <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="inline-block">
-                                @csrf 
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete the category: {{ $category->name }}?')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No categories found.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+        <a href="{{ route('admin.categories.create') }}" 
+           class="group relative px-6 py-3 overflow-hidden font-bold rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-purple-950 shadow-lg hover:shadow-yellow-500/40 transition-all duration-300">
+            <span class="relative z-10 flex items-center">
+                <i class="bi bi-plus-lg mr-2"></i>
+                Add Category
+            </span>
+        </a>
     </div>
 
+    @if(session('success'))
+        <div class="mb-6 flex items-center bg-[#1a0b2e]/60 border border-yellow-600/20 text-white px-6 py-4 rounded-2xl backdrop-blur-md">
+            <i class="bi bi-check2-circle text-xl mr-3 text-yellow-500"></i>
+            <span class="font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
+
+    <div class="bg-[#1a0b2e]/60 border border-yellow-600/20 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-xl">
+        <table class="min-w-full">
+            <thead>
+                <tr class="bg-purple-900/40 border-b border-yellow-600/20">
+                    <th class="px-8 py-5 text-left text-xs font-bold text-yellow-500 uppercase tracking-[0.2em]">Index</th>
+                    <th class="px-8 py-5 text-left text-xs font-bold text-yellow-500 uppercase tracking-[0.2em]">Category</th>
+                    <th class="px-8 py-5 text-left text-xs font-bold text-yellow-500 uppercase tracking-[0.2em]">Classification</th>
+                    <th class="px-8 py-5 text-right text-xs font-bold text-yellow-500 uppercase tracking-[0.2em]">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-purple-800/30">
+                @forelse ($categories as $category)
+                <tr class="hover:bg-yellow-500/5 transition-colors duration-200">
+                    <td class="px-8 py-6 text-sm font-mono text-purple-400">
+                        #{{ str_pad($category->id, 3, '0', STR_PAD_LEFT) }}
+                    </td>
+                    <td class="px-8 py-6">
+                        <a href="{{ route('admin.categories.show', $category->id) }}" class="text-sm font-bold text-white hover:text-yellow-400 transition-colors">
+                            {{ $category->name }}
+                        </a>
+                    </td>
+                    <td class="px-8 py-6">
+                        <span class="px-3 py-1 text-[10px] font-bold rounded-full border border-purple-500/50 text-purple-300 bg-purple-900/40 uppercase">
+                            {{ $category->Classcategory->name ?? 'Unassigned' }}
+                        </span>
+                    </td>
+                    <td class="px-8 py-6 text-right space-x-6">
+                        <a href="{{ route('admin.categories.show', $category->id) }}" 
+                           class="text-xs font-bold text-purple-300 hover:text-white transition-colors uppercase tracking-widest">
+                           View
+                        </a>
+
+                        <a href="{{ route('admin.categories.edit', $category->id) }}" 
+                           class="text-xs font-bold text-yellow-500 hover:text-yellow-300 transition-colors uppercase tracking-widest">
+                           Edit
+                        </a>
+
+                        <form action="{{ route('admin.categories.destroy', $category->id) }}"
+                              method="POST" class="inline-block">
+                            @csrf @method('DELETE')
+                            <button onclick="return confirm('Delete this category?')" 
+                                    class="text-xs font-bold bg-rose-600 text-white px-4 py-2 rounded-lg uppercase tracking-widest">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="px-8 py-20 text-center text-purple-500 italic uppercase tracking-widest text-xs">
+                        No categories found.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
 @endsection

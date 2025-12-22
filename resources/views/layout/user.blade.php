@@ -3,64 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Book Store')</title>
+    <title>DEVBOOKS | @yield('title')</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #07010D; color: white; }
+        .heading-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Custom Scrollbar for the Deep Background */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #07010D; }
+        ::-webkit-scrollbar-thumb { background: #1A0B2E; border-radius: 10px; border: 2px solid #07010D; }
+        ::-webkit-scrollbar-thumb:hover { background: #CA8A04; }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        .ui-container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    </style>
 </head>
+<body class="antialiased">
 
-<body class="min-h-screen">
+    {{-- Header / Navbar --}}
+    @if(!View::hasSection('hide_navbar'))
+    <nav class="sticky top-0 z-50 bg-[#1a0b2e]/80 backdrop-blur-xl border-b border-yellow-600/10">
+        <div class="ui-container h-20 flex items-center justify-between">
+            <a href="{{ route('user.Home.index') }}" class="heading-font text-2xl font-black tracking-tighter text-white uppercase">
+                DEV<span class="text-yellow-500">BOOKS</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-10">
+                <a href="{{ route('user.Home.index') }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-purple-200/70 hover:text-yellow-500 transition-colors">Catalog</a>
+                <a href="{{ route('orders.index') }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-purple-200/70 hover:text-yellow-500 transition-colors">My Orders</a>
+                
+                <div class="h-4 w-[1px] bg-yellow-600/20"></div>
 
-    <!-- NAVBAR -->
-    <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
-        <div class="ui-container">
-            <div class="flex items-center justify-between gap-4 py-3">
-                <a href="{{ route('user.Home.index') }}" class="flex items-center gap-2 text-slate-900 no-underline">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-                        <i class="bi bi-journal-bookmark-fill text-base"></i>
-                    </span>
-                    <span class="leading-tight">
-                        <span class="block text-sm font-semibold tracking-wide text-slate-500">Academic Bookstore</span>
-                        <span class="block text-lg font-bold tracking-tight">MyBookStore</span>
-                    </span>
+                <a href="{{ route('user.cart.index') }}" class="relative group flex items-center gap-3">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-white group-hover:text-yellow-500 transition-colors">Bag</span>
+                    <div class="relative">
+                        <i class="bi bi-bag text-xl text-white group-hover:text-yellow-500 transition-colors"></i>
+                        <span class="absolute -top-2 -right-2 bg-yellow-500 text-[#07010d] text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full ring-4 ring-[#1a0b2e]">
+                            {{-- Add your dynamic cart count here --}}
+                            0
+                        </span>
+                    </div>
                 </a>
 
-                <nav class="flex items-center gap-2">
-                    <a href="{{ route('user.Home.index') }}" class="ui-btn ui-btn-ghost">
-                        <i class="bi bi-house-door"></i>
-                        <span class="hidden sm:inline">Home</span>
-                    </a>
+                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit" class="bg-rose-600 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white hover:bg-rose-700 hover:shadow-[0_0_20px_rgba(225,29,72,0.3)] transition-all">
+                        Logout
+                    </button>
+                </form>
+            </div>
 
-                    <a href="{{ route('orders.index') }}" class="ui-btn ui-btn-ghost">
-                        <i class="bi bi-receipt"></i>
-                        <span class="hidden sm:inline">My Orders</span>
-                    </a>
-
-                    <a href="{{ route('user.cart.index') }}" class="ui-btn ui-btn-secondary">
-                        <i class="bi bi-cart3"></i>
-                        <span class="hidden sm:inline">Cart</span>
-                    </a>
-
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="ui-btn ui-btn-danger">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span class="hidden sm:inline">Logout</span>
-                        </button>
-                    </form>
-                </nav>
+            <div class="md:hidden">
+                <i class="bi bi-list text-3xl text-yellow-500"></i>
             </div>
         </div>
-    </header>
+    </nav>
+    @endif
 
-    <main class="ui-page">
+    {{-- Main Content Area --}}
+    <main class="relative">
         @yield('content')
     </main>
+
+    {{-- Footer --}}
+    <footer class="bg-[#07010d] border-t border-yellow-600/10 py-12">
+        <div class="ui-container flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-purple-200/30">
+                &copy; {{ date('Y') }} DEVBOOKS COLLECTIVE. ALL RIGHTS RESERVED.
+            </p>
+            <div class="flex gap-8">
+                <a href="#" class="text-[10px] font-black uppercase tracking-widest text-purple-200/30 hover:text-yellow-500">Privacy</a>
+                <a href="#" class="text-[10px] font-black uppercase tracking-widest text-purple-200/30 hover:text-yellow-500">Terms</a>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

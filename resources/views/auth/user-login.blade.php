@@ -1,44 +1,24 @@
-@extends('layouts.auth')
-
-@section('title', 'User Login')
-@section('form-title', 'Sign in (User)')
+@extends('layout.auth')
+@section('title', 'Sign In')
+@section('form-title', 'Customer Login')
 
 @section('content')
+    <form method="POST" action="{{ route('user.check') }}" class="space-y-6">
+        @csrf
+        <div>
+            <label class="ui-label">Email</label>
+            <input type="email" name="email" class="ui-input" placeholder="you@example.com" required>
+        </div>
 
-@if(session('error'))
-    <div class="ui-alert ui-alert-error mb-4">
-        {{ session('error') }}
-    </div>
-@endif
+        <div>
+            <label class="ui-label">Password</label>
+            <input type="password" name="password" class="ui-input" placeholder="••••••••" required>
+        </div>
 
-<form method="POST" action="{{ route('user.check') }}" class="space-y-4">
-    @csrf
+        <button type="submit" class="btn-black w-full">Sign In</button>
 
-    <div>
-        <label class="ui-label">Email</label>
-        <input type="email" name="email" class="ui-input" required>
-    </div>
-
-    <div>
-        <label class="ui-label">Password</label>
-        <input type="password" name="password" class="ui-input" required>
-    </div>
-
-    <button type="submit" class="ui-btn ui-btn-primary w-full justify-center">
-        <i class="bi bi-box-arrow-in-right"></i>
-        Login
-    </button>
-
-    <div class="flex items-center gap-3 py-2">
-        <div class="h-px flex-1 bg-slate-200"></div>
-        <span class="text-xs font-semibold text-slate-500">or</span>
-        <div class="h-px flex-1 bg-slate-200"></div>
-    </div>
-
-    <a href="{{ route('user.register') }}" class="ui-btn ui-btn-secondary w-full justify-center no-underline">
-        <i class="bi bi-person-plus"></i>
-        Create account
-    </a>
-</form>
-
+        <p class="text-center text-sm text-purple-200/70">
+            New customer? <a href="{{ route('user.register') }}" class="font-bold text-white underline">Create account</a>
+        </p>
+    </form>
 @endsection
